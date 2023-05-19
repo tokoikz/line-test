@@ -1,67 +1,55 @@
 <template>
-  <!-- UI components here -->
-  <button @click="sendRichMessage">Send Message</button>
+  <div>
+    <button @click="sendPostRequest">Send Message</button>
+  </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   methods: {
-    sendRichMessage() {
-      const headers = {
-        "Authorization": "Bearer {CHANNEL_ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-      };
+    sendPostRequest() {
+      const url = 'https://api.line.me/v2/bot/message/push'; // リクエストを送信するエンドポイントのURL
 
       const data = {
-        "to": "{USER_ID}",
-        "messages": [
+        to: 'U84b063c39a1319cec8ea0838a8686b76',
+        messages: [
           {
-            "type": "template",
-            "altText": "This is a buttons template",
-            "template": {
-              "type": "buttons",
-              "thumbnailImageUrl": "https://example.com/original.jpg",
-              "imageAspectRatio": "rectangle",
-              "imageSize": "cover",
-              "imageBackgroundColor": "#FFFFFF",
-              "title": "Menu",
-              "text": "Please select",
-              "defaultAction": {
-                "type": "uri",
-                "label": "View detail",
-                "uri": "http://example.com/page/123"
-              },
-              "actions": [
-                {
-                  "type": "postback",
-                  "label": "Buy",
-                  "data": "action=buy&itemid=123"
-                },
-                {
-                  "type": "postback",
-                  "label": "Add to cart",
-                  "data": "action=add&itemid=123"
-                },
-                {
-                  "type": "uri",
-                  "label": "View detail",
-                  "uri": "http://example.com/page/123"
-                }
-              ]
+            type: 'flex',
+            altText: 'Flex Message',
+            contents: {
+              type: 'bubble',
+              body: {
+                type: 'box',
+                layout: 'vertical',
+                contents: [
+                  {
+                    type: 'text',
+                    text: 'Hello, World!'
+                  }
+                ]
+              }
             }
           }
         ]
       };
 
-      axios
-        .post('https://api.line.me/v2/bot/message/push', data, { headers })
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer zl11V8FNpU8TJHmpbwto49dkJvXecFSXd7aDyhkMOu8PO4BvciFwLcM+dfhod0qjWT3eqR9Sn1+1DBBxoa72s8TpGAbTJg91BBPaCiIG49z0uNHqEGlrS3RUOkUT+XKHfo+NRe0b4j6yOAGAML7KwgdB04t89/1O/w1cDnyilFU='
+        },
+        body: JSON.stringify(data)
+      })
         .then(response => {
-          console.log(response.data);
+          if (response.ok) {
+            console.log('Message sent successfully');
+          } else {
+            console.error('Failed to send message');
+          }
         })
         .catch(error => {
-          console.error(error);
+          console.error('Error sending message:', error);
         });
     }
   }
